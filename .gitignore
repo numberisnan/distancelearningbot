@@ -1,0 +1,8 @@
+config.json
+node_modules/
+package-lock.json
+.temp/test
+.data/
+
+# Webstorm
+.idea/*
