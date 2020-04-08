@@ -7,7 +7,7 @@ const { validateUser } = require("./lib/validateUser");
 const { DataTypes } = require('sequelize');
 const moment = require("moment");
 const model = require("../.data/models/users");
-const { nDigits } = require("./lib/dateFunctions");
+const { nDigits, format12to24hour } = require("./lib/dateFunctions");
 
 var db, sq;
 async function init(client, s) {
@@ -70,7 +70,16 @@ async function init(client, s) {
                     return;
                 }
 
-                const time = command.split(" ")[1];
+                var time = command.split(" ")[1];
+                if (time.split(":")[0].length <= 1) { // e.g. 9:40
+                    time = "0" + time;
+                }
+
+                if (time.length > 5) {
+                    //In AM/PM format
+                    time = format12to24hour(time); //Convert to 24 hour format
+                }
+
                 if (Number.isNaN(+time[0] + time[1]) || Number.isNaN(+time[3] + time[4])) { // not a valid time
                     return;
                 }
@@ -133,7 +142,7 @@ async function init(client, s) {
                     var event;
                     for (var key of Object.keys(sch)) {
                         var diff = moment.duration(currentTimeObj.diff(moment(dateString + sch[key].time)));
-                        console.log(key, diff.asMinutes());
+                        //console.log(key, diff.asMinutes());
                         if (diff.asMinutes() < 0 && diff.asMinutes() > minDuration.asMinutes()) {
                             minDuration = diff;
                             event = key;
@@ -155,7 +164,7 @@ async function init(client, s) {
                         console.log("Reminded " + message.author.username + " of " + event);
                     }, -diff.asMilliseconds())
 
-                    return message.channel.send("Will remind you for '" + event + "' in " + -diff.asMinutes() + " minutes!");
+                    return message.channel.send("Will remind you for '" + event + "' in " + Math.round(-diff.asMinutes()) + " minutes!");
                 } else {
                     return message.channel.send("Nothing to remind you of!");
                 }
