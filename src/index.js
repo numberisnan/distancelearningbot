@@ -35,9 +35,9 @@ client.login(config.token)
         var sudoDescriptionString = "";
         for (var i = 0; i < commands.length; i++) {
             var commandObj = commands[i];
-            sudoDescriptionString += commandObj.name.join(", ") + "   -   " + commandObj.description + (commandObj.sudo ? " (SUDO)" : "") + "\n";
+            sudoDescriptionString += commandObj.name.join(", ") + "   -   *" + commandObj.format + "*  -  " + commandObj.description + (commandObj.sudo ? " (SUDO)" : "") + "\n";
             if (commandObj.sudo) continue;
-            descriptionString += commandObj.name.join(", ") + "   -   " + commandObj.description + "\n";
+            descriptionString += commandObj.name.join(", ") + "   -   *" + commandObj.format + "*  -  " + commandObj.description + "\n";
         }
 
         client.on('message', message => {
